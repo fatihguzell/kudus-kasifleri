@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kudus-kasifleri-v4';
+const CACHE_NAME = 'kudus-kasifleri-v5';
 const urlsToCache = [
     '/',
     '/index.html',
