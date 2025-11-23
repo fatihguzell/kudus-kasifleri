@@ -428,16 +428,22 @@ const Admin = {
 
             let actions = '<span>Admin</span>';
             if (u.role !== 'admin') {
-                actions = `
-                    <div style="display:flex; gap:5px;">
-                        <button class="btn-small" style="background:orange" onclick="Admin.changePassword('${u.id}')">Şifre</button>
-                        <button class="btn-small" style="background:red" onclick="Admin.deleteUser('${u.id}')">Sil</button>
-                    </div>
-                `;
+                // Don't allow deleting bots, just show indicator
+                if (u.isBot) {
+                    actions = '<span style="background: #3498db; color: white; padding: 3px 8px; border-radius: 5px; font-size: 0.8rem;">🤖 BOT</span>';
+                } else {
+                    actions = `
+                        <div style="display:flex; gap:5px;">
+                            <button class="btn-small" style="background:orange" onclick="Admin.changePassword('${u.id}')">Şifre</button>
+                            <button class="btn-small" style="background:red" onclick="Admin.deleteUser('${u.id}')">Sil</button>
+                        </div>
+                    `;
+                }
             }
 
+            const botBadge = u.isBot ? ' <span style="color: #3498db; font-size: 0.8rem;">🤖</span>' : '';
             item.innerHTML = `
-                <span>${u.username} (Lvl: ${u.level})</span>
+                <span>${u.username}${botBadge} (Lvl: ${u.level})</span>
                 ${actions}
             `;
             list.appendChild(item);

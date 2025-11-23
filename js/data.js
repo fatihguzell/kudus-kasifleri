@@ -386,6 +386,7 @@ const DataManager = {
             if (targetLevel >= 10) badges.push('master');
 
             users.push({
+                id: `bot_${Date.now()}_${index}`, // Unique ID for each bot
                 username: name,
                 password: 'bot123',
                 xp: xp,
