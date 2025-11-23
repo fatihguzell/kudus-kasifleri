@@ -342,37 +342,60 @@ const DataManager = {
             'Mustafa Şahin', 'Zeynep Yıldız', 'Ali Aydın', 'Elif Öztürk',
             'Hasan Arslan', 'Merve Doğan', 'İbrahim Kılıç', 'Selin Koç',
             'Ömer Şimşek', 'Büşra Yılmaz', 'Yunus Çetin', 'Esra Özdemir',
-            'Murat Aksoy', 'Hatice Polat', 'Emre Güneş', 'Rabia Kara'
+            'Murat Aksoy', 'Hatice Polat', 'Emre Güneş', 'Rabia Kara',
+            'Kemal Acar', 'Fadime Yavuz', 'Recep Özer', 'Hacer Tekin',
+            'Salih Erdoğan', 'Nurcan Şen', 'Kadir Aslan', 'Sevgi Çakır',
+            'Hamza Kurt', 'Gülsüm Özkan'
         ];
 
         const users = this.getUsers();
 
         botNames.forEach((name, index) => {
-            // Random stats for realistic leaderboard
-            const totalQuestions = Math.floor(Math.random() * 50) + 20; // 20-70 questions
-            const correctRate = 0.6 + Math.random() * 0.35; // 60-95% correct
+            // Create varied stats across all rank levels (1-10)
+            // Distribute bots across different levels
+            const targetLevel = Math.floor(index / 3) + 1; // 3 bots per level
+            const baseXP = (targetLevel - 1) * 100;
+            const xp = baseXP + Math.floor(Math.random() * 90) + 10; // Random within level range
+
+            // Vary question counts based on level (higher level = more questions)
+            const minQuestions = 10 + (targetLevel * 5);
+            const maxQuestions = 30 + (targetLevel * 10);
+            const totalQuestions = Math.floor(Math.random() * (maxQuestions - minQuestions)) + minQuestions;
+
+            // Correct rate varies (60-95%, higher levels tend to be better)
+            const baseCorrectRate = 0.55 + (targetLevel * 0.03); // Higher level = better accuracy
+            const correctRate = Math.min(0.95, baseCorrectRate + (Math.random() * 0.15));
             const totalCorrect = Math.floor(totalQuestions * correctRate);
             const totalWrong = totalQuestions - totalCorrect;
-            const xp = totalCorrect * 10 + Math.floor(Math.random() * 50);
-            const level = Math.min(10, Math.floor(xp / 100) + 1);
 
-            // Average time per question (faster players get better rank)
-            const avgTimePerQuestion = 5 + Math.random() * 15; // 5-20 seconds
+            // Speed varies (faster players at higher levels)
+            const baseSpeed = 20 - (targetLevel * 1.5); // Higher level = faster
+            const avgTimePerQuestion = Math.max(5, baseSpeed + (Math.random() * 8));
             const totalTime = Math.floor(totalQuestions * avgTimePerQuestion);
+
+            // Varied last played times (some recent, some older)
+            const daysAgo = Math.floor(Math.random() * 14); // 0-14 days ago
+            const lastPlayed = Date.now() - (daysAgo * 24 * 60 * 60 * 1000);
+
+            // Some bots have badges based on their level
+            const badges = [];
+            if (targetLevel >= 2) badges.push('first_step');
+            if (targetLevel >= 5) badges.push('explorer');
+            if (targetLevel >= 10) badges.push('master');
 
             users.push({
                 username: name,
                 password: 'bot123',
                 xp: xp,
-                level: level,
-                badges: [],
+                level: targetLevel,
+                badges: badges,
                 role: 'user',
                 isBot: true,
                 totalQuestions: totalQuestions,
                 totalCorrect: totalCorrect,
                 totalWrong: totalWrong,
-                totalTime: totalTime, // in seconds
-                lastPlayed: Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000) // within last week
+                totalTime: totalTime,
+                lastPlayed: lastPlayed
             });
         });
 
