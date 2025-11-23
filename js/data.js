@@ -17,8 +17,6 @@ const DataManager = {
         if (!localStorage.getItem('kk_messages')) {
             this.initMessages();
         }
-        // TEMPORARY: Force bot reset
-        localStorage.removeItem('kk_bots_initialized');
         if (!localStorage.getItem('kk_bots_initialized')) {
             this.initBotUsers();
         }
