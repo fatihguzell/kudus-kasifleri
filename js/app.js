@@ -182,6 +182,43 @@ const App = {
             document.getElementById('about-us-modal').classList.add('hidden');
         };
 
+        // Mobile: Expand/Collapse footer buttons on click
+        if (window.innerWidth <= 768) {
+            const footerButtons = document.querySelectorAll('.bar-btn');
+
+            footerButtons.forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    // If already expanded, let the click go through (execute action)
+                    if (this.classList.contains('expanded')) {
+                        // Remove expanded class after action
+                        setTimeout(() => {
+                            footerButtons.forEach(b => b.classList.remove('expanded'));
+                        }, 300);
+                        return;
+                    }
+
+                    // Otherwise, just expand this button
+                    e.stopPropagation();
+                    footerButtons.forEach(b => b.classList.remove('expanded'));
+                    this.classList.add('expanded');
+
+                    // Auto-collapse after 3 seconds if not clicked
+                    setTimeout(() => {
+                        if (this.classList.contains('expanded')) {
+                            this.classList.remove('expanded');
+                        }
+                    }, 3000);
+                });
+            });
+
+            // Close expanded buttons when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.bar-btn')) {
+                    footerButtons.forEach(b => b.classList.remove('expanded'));
+                }
+            });
+        }
+
 
         // Register
         document.getElementById('btn-register').onclick = () => {
