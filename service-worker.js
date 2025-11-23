@@ -38,6 +38,25 @@ self.addEventListener('fetch', event => {
     );
 });
 
+self.addEventListener("install", (e) => {
+    e.waitUntil(
+        caches.open("kudus-cache").then((cache) => {
+            return cache.addAll([
+                "/kudus-kasifleri/",
+                "/kudus-kasifleri/index.html",
+                "/kudus-kasifleri/style.css",
+                "/kudus-kasifleri/script.js"
+            ]);
+        })
+    );
+});
+
+self.addEventListener("fetch", (e) => {
+    e.respondWith(
+        caches.match(e.request).then((response) => response || fetch(e.request))
+    );
+});
+
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
     const cacheWhitelist = [CACHE_NAME];
