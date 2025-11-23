@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kudüs Kaşifleri</title>
+
+    <!-- PWA Support -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#29abe2">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Kudüs Kaşifleri">
+    <link rel="apple-touch-icon" href="assets/logo.png">
+
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Google Fonts: Nunito for Turkish support and child-friendly look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div id="app-container">
+        <!-- Splash Screen -->
+        <div id="splash-screen" class="screen active">
+            <div class="splash-content">
+                <button id="btn-skip-intro" class="btn-skip">Atla >></button>
+                <img id="splash-logo" src="assets/logo.png" alt="Kudüs Kaşifleri Logo" class="logo-initial">
+                <img id="intro-mascot" src="assets/karakter-ifadeleri/krk-hosgeldin.png" alt="Selahaddin"
+                    class="mascot-hidden">
+                <div id="intro-bubble" class="speech-bubble">
+                    <p></p>
+                    <button id="btn-intro-next" class="btn-small btn-next">Devam Et</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auth Screen -->
+        <div id="auth-screen" class="screen hidden">
+            <div class="auth-container">
+                <img src="assets/logo.png" alt="Logo" class="small-logo">
+
+                <!-- Login Form -->
+                <div id="login-form" class="form-box">
+                    <h2>Giriş Yap</h2>
+                    <input type="text" id="login-username" placeholder="Oyuncu Adı">
+                    <input type="password" id="login-password" placeholder="Şifre">
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="login-remember">
+                        <label for="login-remember">Oturumu açık tut</label>
+                    </div>
+                    <button id="btn-login" class="btn-primary">Giriş Yap</button>
+                    <p class="switch-text">Hesabın yok mu? <span id="show-register">Üye Ol</span></p>
+                </div>
+
+                <!-- Register Form -->
+                <div id="register-form" class="form-box hidden">
+                    <h2>Üye Ol</h2>
+                    <input type="text" id="reg-username" placeholder="Oyuncu Adı">
+                    <input type="password" id="reg-password" placeholder="Şifre">
+                    <button id="btn-register" class="btn-secondary">Kayıt Ol</button>
+                    <p class="switch-text">Zaten üye misin? <span id="show-login">Giriş Yap</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Screen -->
+        <div id="dashboard-screen" class="screen hidden">
+            <header class="app-header">
+                <div class="header-left">
+                    <img src="assets/logo.png" class="header-logo" alt="Logo">
+                    <div class="user-info">
+                        <span id="user-name-display">Kaşif</span>
+                        <span id="user-rank-display" class="badge">Acemi</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <img id="header-latest-badge" src="" class="header-badge hidden" alt="Son Rozet"
+                        onclick="document.getElementById('btn-show-badges').click()">
+                </div>
+            </header>
+
+            <main class="dashboard-content">
+                <!-- Stats removed as per request -->
+
+                <div class="action-area">
+                    <div style="display:flex; gap:10px; width:100%; justify-content:center;">
+                        <button id="btn-show-ranks" class="btn-secondary">Rütbeler</button>
+                        <button id="btn-show-badges" class="btn-secondary">Rozetler</button>
+                    </div>
+                </div>
+
+                <!-- Dashboard Footer -->
+                <div class="dashboard-footer">
+                    <button id="btn-start-game" class="btn-primary start-game-btn pulse-anim">
+                        OYUNA BAŞLA
+                    </button>
+
+                    <div class="action-bar">
+                        <div id="btn-message-box" class="bar-btn left-btn">
+                            <div class="icon-container">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path
+                                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                    </path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                            </div>
+                            <span class="text">Mesaj Gönder</span>
+                        </div>
+
+                        <div id="btn-admin" class="bar-btn center-btn hidden">
+                            <div class="icon-container">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path
+                                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <span class="text">Admin</span>
+                        </div>
+
+                        <div id="btn-logout" class="bar-btn right-btn">
+                            <div class="icon-container">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                    <polyline points="16 17 21 12 16 7"></polyline>
+                                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                                </svg>
+                            </div>
+                            <span class="text">Çıkış</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message Modal -->
+                <div id="message-modal" class="modal-overlay hidden">
+                    <div class="modal-content" style="max-width: 400px;">
+                        <div class="modal-header">
+                            <h2>Bize Yazın</h2>
+                            <button id="btn-close-message" class="btn-small btn-close">X</button>
+                        </div>
+                        <div style="padding: 20px;">
+                            <p style="margin-bottom: 15px; color: #666;">Dilek, şikayet, öneri veya teşekkürlerinizi
+                                bekliyoruz.</p>
+                            <textarea id="message-text" placeholder="Mesajınızı buraya yazın..."
+                                style="width:100%; height:120px; margin-bottom:15px; padding:15px; border-radius:10px; border:2px solid #eee; font-family:inherit; resize:none;"></textarea>
+                            <button id="btn-send-message" class="btn-primary"
+                                style="width:100%; background-color: #2ecc71;">Gönder</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="badges-area hidden">
+                    <!-- Old badges area hidden, replaced by modal -->
+                </div>
+
+                <!-- Admin Link (Hidden for normal users) -->
+                <div id="admin-link-area" class="hidden">
+                    <button id="btn-go-admin" class="btn-secondary">Admin Paneli</button>
+                </div>
+            </main>
+        </div>
+
+        <!-- Ranks Modal -->
+        <div id="ranks-modal" class="modal-overlay hidden">
+            <div class="modal-content ranks-content">
+                <div class="modal-header">
+                    <h2>Rütbeler</h2>
+                    <button id="btn-close-ranks" class="btn-small btn-close">X</button>
+                </div>
+                <div id="ranks-list" class="ranks-list">
+                    <!-- Ranks injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Badges Modal -->
+        <div id="badges-modal" class="modal-overlay hidden">
+            <div class="modal-content badges-content">
+                <div class="modal-header">
+                    <h2>Rozetler</h2>
+                    <button id="btn-close-badges" class="btn-small btn-close">X</button>
+                </div>
+                <div id="badges-list" class="badges-list">
+                    <!-- Badges injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Image Zoom Modal -->
+        <div id="image-zoom-modal" class="modal-overlay hidden" style="z-index: 2000; background: #000000;">
+            <div
+                style="background: transparent; padding: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                <img id="zoomed-image" src="" alt="Zoomed Badge"
+                    style="max-width: 80%; max-height: 80%; object-fit: contain;">
+            </div>
+        </div>
+        </main>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen hidden">
+            <header class="game-header">
+                <button id="btn-quit-game" class="btn-small">Çıkış</button>
+                <div class="score-display">Puan: <span id="current-score">0</span></div>
+            </header>
+            <div class="game-container">
+                <img id="game-mascot" src="" alt="Mascot" class="game-mascot">
+
+                <!-- Progress Bar -->
+                <div class="game-progress-container">
+                    <div class="game-progress-bar">
+                        <div id="game-progress-fill" class="game-progress-fill"></div>
+                    </div>
+                    <div class="game-progress-text"><span id="current-question">1</span>/10</div>
+                </div>
+
+                <div id="question-card" class="question-card">
+                    <h3 id="question-text">Soru yükleniyor...</h3>
+                    <div id="options-container" class="options-grid">
+                        <!-- Options injected here -->
+                    </div>
+                </div>
+
+                <!-- Timer -->
+                <div id="game-timer" class="game-timer">
+                    <span id="timer-display">00:00</span>
+                </div>
+            </div>
+
+            <!-- Result Modal -->
+            <div id="result-modal" class="modal-overlay hidden">
+                <div class="modal-content">
+                    <div class="result-content">
+                        <img id="result-mascot" src="" alt="Sonuç Maskotu" class="result-mascot">
+                        <h2 id="result-title">Oyun Bitti</h2>
+                        <p id="result-message">Skorun: 0</p>
+                        <button id="btn-result-home" class="btn-primary">Ana Sayfaya Dön</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="hidden">
+            <img id="loading-mascot" src="" alt="Mascot">
+        </div>
+
+        <!-- Admin Screen -->
+        <div id="admin-screen" class="screen hidden">
+            <header class="app-header admin-header">
+                <h2>Admin Paneli</h2>
+                <button id="btn-exit-admin" class="btn-small">Çıkış</button>
+            </header>
+            <div class="admin-content">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="questions">Sorular</button>
+                    <button class="tab-btn" data-tab="users">Oyuncular</button>
+                    <button class="tab-btn" data-tab="badges">Rozetler</button>
+                    <button class="tab-btn" data-tab="ranks">Rütbeler</button>
+                    <button class="tab-btn" data-tab="messages">Mesaj Kutusu</button>
+                    <button class="tab-btn" data-tab="settings">Oyun Ayarları</button>
+                </div>
+
+                <div id="tab-questions" class="tab-content active">
+                    <div class="add-question-form">
+                        <h4 id="form-title">Yeni Soru Ekle</h4>
+                        <input type="hidden" id="edit-q-id">
+                        <div class="form-group">
+                            <label>Soru Metni</label>
+                            <input type="text" id="new-q-text" placeholder="Soruyu buraya yazın">
+                        </div>
+
+                        <div class="form-group">
+                            <label style="color:green">Doğru Cevap</label>
+                            <input type="text" id="new-q-correct-text" placeholder="Doğru cevabı yazın">
+                        </div>
+
+                        <div class="form-group">
+                            <label style="color:red">Yanlış Cevaplar</label>
+                            <input type="text" id="new-q-wrong1" placeholder="Yanlış cevap 1">
+                            <input type="text" id="new-q-wrong2" placeholder="Yanlış cevap 2">
+                            <input type="text" id="new-q-wrong3" placeholder="Yanlış cevap 3">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Zorluk Derecesi (1-10)</label>
+                            <select id="new-q-level" class="form-control">
+                                <option value="1">1 - Acemi Kaşif</option>
+                                <option value="2">2 - Mescid Kuşu</option>
+                                <option value="3">3 - Gazze Savunucusu</option>
+                                <option value="4">4 - Kudüs Sevdalısı</option>
+                                <option value="5">5 - Acemi Muhafız</option>
+                                <option value="6">6 - Miraç Yolcusu</option>
+                                <option value="7">7 - Aksa Bilgini</option>
+                                <option value="8">8 - Aksa Muhafızı</option>
+                                <option value="9">9 - Kudüs Mihmandarı</option>
+                                <option value="10">10 - Küçük Selahaddin</option>
+                            </select>
+                        </div>
+
+                        <div style="display:flex; gap:10px; margin-top:10px;">
+                            <button id="btn-add-question" class="btn-primary">Ekle</button>
+                            <button id="btn-cancel-edit" class="btn-secondary hidden"
+                                onclick="Admin.cancelEdit()">İptal</button>
+                        </div>
+                    </div>
+
+                    <div class="filter-area"
+                        style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                        <label style="font-weight:bold; margin-right:10px;">Soruları Filtrele:</label>
+                        <select id="filter-level-select" onchange="Admin.loadQuestions()"
+                            style="padding: 5px; border-radius: 5px;">
+                            <option value="all">Tüm Seviyeler</option>
+                            <option value="1">Seviye 1</option>
+                            <option value="2">Seviye 2</option>
+                            <option value="3">Seviye 3</option>
+                            <option value="4">Seviye 4</option>
+                            <option value="5">Seviye 5</option>
+                            <option value="6">Seviye 6</option>
+                            <option value="7">Seviye 7</option>
+                            <option value="8">Seviye 8</option>
+                            <option value="9">Seviye 9</option>
+                            <option value="10">Seviye 10</option>
+                        </select>
+                    </div>
+
+                    <div id="questions-list" class="list-container">
+                        <!-- Questions list -->
+                    </div>
+                </div>
+
+                <div id="tab-users" class="tab-content">
+                    <div
+                        style="background: #f9f9f9; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #eee;">
+                        <h3 style="margin-top: 0; color: var(--color-blue-dark); font-size: 1.1rem;">Yeni Oyuncu Ekle
+                        </h3>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <input type="text" id="new-user-username" placeholder="Oyuncu Adı" class="form-control"
+                                style="flex: 1;">
+                            <input type="text" id="new-user-password" placeholder="Şifre" class="form-control"
+                                style="flex: 1;">
+                            <button class="btn-primary" onclick="Admin.addUser()" style="white-space: nowrap;">Oyuncu
+                                Ekle</button>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <input type="text" id="user-search-input" placeholder="Oyuncu adı ara..." class="form-control"
+                            oninput="Admin.loadUsers()">
+                    </div>
+                    <div id="users-list" class="list-container">
+                        <!-- Users list -->
+                    </div>
+                </div>
+
+                <div id="tab-badges" class="tab-content">
+                    <div id="admin-badges-list" class="list-container">
+                        <!-- Admin Badges List -->
+                    </div>
+                </div>
+
+                <div id="tab-ranks" class="tab-content">
+                    <div id="admin-ranks-list" class="list-container">
+                        <!-- Admin Ranks List -->
+                    </div>
+                </div>
+
+                <div id="tab-messages" class="tab-content">
+                    <div id="admin-messages-list" class="list-container">
+                        <!-- Admin Messages List -->
+                    </div>
+                </div>
+
+                <div id="tab-settings" class="tab-content">
+                    <h3>Oyun Süre Ayarları</h3>
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 15px;">
+                        <p style="margin-bottom: 15px; color: #666;">Her oyun turu için süre belirleyin:</p>
+                        <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Dakika:</label>
+                                <input type="number" id="game-minutes" min="0" max="60" value="5" class="form-control">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="display: block; margin-bottom: 5px; font-weight: bold;">Saniye:</label>
+                                <input type="number" id="game-seconds" min="0" max="59" value="0" class="form-control">
+                            </div>
+                        </div>
+                        <button class="btn-primary" onclick="Admin.saveGameSettings()">Kaydet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Modal (Custom Alert) -->
+    <div id="message-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="btn-close-msg" class="btn-close">&times;</span>
+            </div>
+            <div class="result-content">
+                <div class="speech-bubble error-bubble">
+                    <p id="msg-text">Mesaj</p>
+                </div>
+                <img id="msg-mascot" src="assets/karakter-ifadeleri/krk-uzgun.png" alt="Mascot" class="result-mascot">
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Footer -->
+    <footer id="app-footer">
+        <a href="https://hucurathareketi.com/" id="footer-link" target="_blank">Hucurat Hareketi Derneği</a> tarafından
+        hazırlanmıştır.
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.0/package/dist/xlsx.full.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => console.log('SW registered:', registration))
+                    .catch(error => console.log('SW registration failed:', error));
+            });
+        }
+    </script>
+</body>
+
+</html>

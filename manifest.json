@@ -1,0 +1,25 @@
+{
+  "name": "Kudüs Kaşifleri",
+  "short_name": "Kudüs",
+  "description": "Mescid-i Aksa Bilgi Yarışması - Hucurat Hareketi Derneği",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#29abe2",
+  "theme_color": "#29abe2",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
