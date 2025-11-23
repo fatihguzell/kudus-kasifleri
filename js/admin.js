@@ -102,6 +102,24 @@ const Admin = {
         alert('Biz Kimiz metni kaydedildi!');
     },
 
+    resetBots() {
+        if (confirm('DİKKAT! Tüm bot kullanıcılar silinip yeniden oluşturulacak.\nDevam etmek istiyor musunuz?')) {
+            // Remove bot initialization flag
+            localStorage.removeItem('kk_bots_initialized');
+
+            // Remove all existing bots
+            let users = DataManager.getUsers();
+            users = users.filter(u => !u.isBot);
+            localStorage.setItem('kk_users', JSON.stringify(users));
+
+            // Recreate bots
+            DataManager.initBotUsers();
+
+            alert('✅ 30 bot kullanıcı başarıyla oluşturuldu!\nSayfa yenilenecek...');
+            location.reload();
+        }
+    },
+
     deleteAllMessages() {
         if (confirm("DİKKAT! Tüm mesajlar silinecek. Bu işlem geri alınamaz!\nDevam etmek istediğinize emin misiniz?")) {
             const password = prompt("Güvenlik doğrulaması için Admin şifresini girin:");
