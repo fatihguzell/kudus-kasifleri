@@ -78,7 +78,7 @@ const Admin = {
     },
 
     loadGameSettings() {
-        const settings = JSON.parse(localStorage.getItem('kk_game_settings') || '{"minutes": 5, "seconds": 0}');
+        const settings = DataManager.getSettings();
         document.getElementById('game-minutes').value = settings.minutes;
         document.getElementById('game-seconds').value = settings.seconds;
     },
@@ -88,7 +88,7 @@ const Admin = {
         const seconds = parseInt(document.getElementById('game-seconds').value) || 0;
 
         const settings = { minutes, seconds };
-        localStorage.setItem('kk_game_settings', JSON.stringify(settings));
+        DataManager.saveSettings(settings);
         alert('Oyun ayarları kaydedildi!');
     },
 

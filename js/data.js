@@ -1,52 +1,114 @@
 
 const DataManager = {
     init() {
-        let users = JSON.parse(localStorage.getItem('kk_users') || '[]');
-
-        // Ensure Admin Exists or Update
-        let adminUser = users.find(u => u.role === 'admin');
-
-        if (!adminUser) {
-            adminUser = {
-                id: 'admin',
-                username: 'fatihguzel',
-                password: 'Fatih5634',
-                role: 'admin',
-                level: 10,
-                xp: 0,
-                badges: []
-            };
-            users.push(adminUser);
-        } else {
-            // Force update admin username and level
-            adminUser.username = 'fatihguzel';
-            adminUser.password = 'Fatih5634'; // Ensure password is updated if it exists
-            adminUser.level = 10;
+        // Initialize LocalStorage if empty
+        if (!localStorage.getItem('kk_users')) {
+            this.initDefaultUsers();
         }
-        localStorage.setItem('kk_users', JSON.stringify(users));
-
-        // Initialize Badges
-        this.initBadges();
-
         if (!localStorage.getItem('kk_questions')) {
-            const defaultQuestions = [
-                {
-                    id: 1,
-                    text: "Mescid-i Aksa hangi şehirdedir?",
-                    options: ["Mekke", "Medine", "Kudüs", "İstanbul"],
-                    correct: 2,
-                    level: 1
-                },
-                {
-                    id: 2,
-                    text: "İlk kıblemiz neresidir?",
-                    options: ["Kabe", "Mescid-i Aksa", "Mescid-i Nebevi", "Ayasofya"],
-                    correct: 1,
-                    level: 1
-                }
-            ];
-            localStorage.setItem('kk_questions', JSON.stringify(defaultQuestions));
+            this.initDefaultQuestions();
         }
+        if (!localStorage.getItem('kk_badges')) {
+            this.initBadges();
+        }
+        if (!localStorage.getItem('kk_ranks')) {
+            this.initRanks();
+        }
+        if (!localStorage.getItem('kk_messages')) {
+            this.initMessages();
+        }
+
+        // Sync with Firebase if available
+        if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+            this.syncWithFirebase();
+        }
+    },
+
+    syncWithFirebase() {
+        const db = firebase.database();
+
+        // 1. Listen for changes from Firebase and update LocalStorage
+        db.ref('questions').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                localStorage.setItem('kk_questions', JSON.stringify(data));
+                console.log('Questions synced from Firebase');
+            }
+        });
+
+        db.ref('users').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                // Merge logic could be better, but for now overwrite
+                // Be careful not to overwrite current session user data if needed
+                localStorage.setItem('kk_users', JSON.stringify(data));
+                console.log('Users synced from Firebase');
+            }
+        });
+
+        db.ref('messages').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                localStorage.setItem('kk_messages', JSON.stringify(data));
+                console.log('Messages synced from Firebase');
+            }
+        });
+
+        db.ref('settings').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                localStorage.setItem('kk_game_settings', JSON.stringify(data));
+                console.log('Settings synced from Firebase');
+            }
+        });
+
+        // 2. Initial Push (if Firebase is empty, push local data)
+        // This is dangerous if multiple users push default data. 
+        // Ideally, only Admin pushes. For now, we assume Admin sets up the DB.
+    },
+
+    // Helper to push data to Firebase
+    pushToFirebase(key, data) {
+        if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+            firebase.database().ref(key).set(data)
+                .then(() => console.log(`${key} pushed to Firebase`))
+                .catch(e => console.error('Firebase push error:', e));
+        }
+    },
+
+    initDefaultUsers() {
+        let users = [];
+        let adminUser = {
+            id: 'admin',
+            username: 'fatihguzel',
+            password: 'Fatih5634',
+            role: 'admin',
+            level: 10,
+            xp: 0,
+            badges: []
+        };
+        users.push(adminUser);
+        localStorage.setItem('kk_users', JSON.stringify(users));
+    },
+
+    initDefaultQuestions() {
+        const defaultQuestions = [
+            {
+                id: 1,
+                text: "Mescid-i Aksa hangi şehirdedir?",
+                options: ["Mekke", "Medine", "Kudüs", "İstanbul"],
+                correct: 2,
+                level: 1
+            },
+            {
+                id: 2,
+                text: "İlk kıblemiz neresidir?",
+                options: ["Kabe", "Mescid-i Aksa", "Mescid-i Nebevi", "Ayasofya"],
+                correct: 1,
+                level: 1
+            }
+        ];
+        localStorage.setItem('kk_questions', JSON.stringify(defaultQuestions));
     },
 
     getUsers() {
@@ -62,6 +124,7 @@ const DataManager = {
             users.push(user);
         }
         localStorage.setItem('kk_users', JSON.stringify(users));
+        this.pushToFirebase('users', users); // Sync
     },
 
     findUser(username, password) {
@@ -90,6 +153,7 @@ const DataManager = {
         };
         users.push(newUser);
         localStorage.setItem('kk_users', JSON.stringify(users));
+        this.pushToFirebase('users', users); // Sync
         return { success: true, user: newUser };
     },
 
@@ -103,12 +167,14 @@ const DataManager = {
         if (!question.level) question.level = 1; // Default level
         questions.push(question);
         localStorage.setItem('kk_questions', JSON.stringify(questions));
+        this.pushToFirebase('questions', questions); // Sync
     },
 
     deleteQuestion(id) {
         let questions = this.getQuestions();
         questions = questions.filter(q => q.id !== id);
         localStorage.setItem('kk_questions', JSON.stringify(questions));
+        this.pushToFirebase('questions', questions); // Sync
     },
 
     updateQuestion(id, updatedData) {
@@ -117,11 +183,13 @@ const DataManager = {
         if (index >= 0) {
             questions[index] = { ...questions[index], ...updatedData };
             localStorage.setItem('kk_questions', JSON.stringify(questions));
+            this.pushToFirebase('questions', questions); // Sync
         }
     },
 
     deleteAllQuestions() {
         localStorage.setItem('kk_questions', '[]');
+        this.pushToFirebase('questions', []); // Sync
     },
 
     deleteUser(id) {
@@ -132,6 +200,7 @@ const DataManager = {
 
         users = users.filter(u => u.id !== id);
         localStorage.setItem('kk_users', JSON.stringify(users));
+        this.pushToFirebase('users', users); // Sync
     },
 
     updateUserPassword(id, newPassword) {
@@ -140,6 +209,7 @@ const DataManager = {
         if (userIndex >= 0) {
             users[userIndex].password = newPassword;
             localStorage.setItem('kk_users', JSON.stringify(users));
+            this.pushToFirebase('users', users); // Sync
             return true;
         }
         return false;
@@ -147,16 +217,13 @@ const DataManager = {
 
     initBadges() {
         if (!localStorage.getItem('kk_badges')) {
-            // Use getRanks if available, otherwise default
             const rankNames = this.getRanks().map(r => r.name);
-
             const badges = rankNames.map((rank, index) => ({
                 id: index + 1,
                 name: `${rank} Rozeti`,
                 description: "Bu rozet henüz kazanılmadı.",
-                image: "assets/badges/default_badge.jpg" // Placeholder
+                image: "assets/badges/default_badge.jpg"
             }));
-
             localStorage.setItem('kk_badges', JSON.stringify(badges));
         }
     },
@@ -188,6 +255,8 @@ const DataManager = {
         if (index >= 0) {
             ranks[index].name = name;
             localStorage.setItem('kk_ranks', JSON.stringify(ranks));
+            // Ranks usually static, but if synced:
+            // this.pushToFirebase('ranks', ranks);
             return true;
         }
         return false;
@@ -212,16 +281,28 @@ const DataManager = {
         message.timestamp = new Date().toISOString();
         messages.push(message);
         localStorage.setItem('kk_messages', JSON.stringify(messages));
+        this.pushToFirebase('messages', messages); // Sync
     },
 
     deleteMessage(id) {
         let messages = this.getMessages();
         messages = messages.filter(m => m.id !== id);
         localStorage.setItem('kk_messages', JSON.stringify(messages));
+        this.pushToFirebase('messages', messages); // Sync
     },
 
     deleteAllMessages() {
         localStorage.setItem('kk_messages', '[]');
+        this.pushToFirebase('messages', []); // Sync
+    },
+
+    getSettings() {
+        return JSON.parse(localStorage.getItem('kk_game_settings') || '{"minutes": 5, "seconds": 0}');
+    },
+
+    saveSettings(settings) {
+        localStorage.setItem('kk_game_settings', JSON.stringify(settings));
+        this.pushToFirebase('settings', settings); // Sync
     },
 
     getBadges() {
@@ -234,6 +315,7 @@ const DataManager = {
         if (badgeIndex >= 0) {
             badges[badgeIndex] = { ...badges[badgeIndex], ...updatedData };
             localStorage.setItem('kk_badges', JSON.stringify(badges));
+            // this.pushToFirebase('badges', badges);
             return true;
         }
         return false;
@@ -241,4 +323,3 @@ const DataManager = {
 };
 
 DataManager.init();
-DataManager.initRanks();
