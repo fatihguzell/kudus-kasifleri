@@ -1459,3 +1459,243 @@ body {
 #loading-overlay.fade-out {
     animation: fadeOutZoom 0.5s ease-in forwards;
 }
+
+/* Stats Cards Design */
+.stats-cards {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #fdcb6e, #e17055);
+    color: white;
+}
+
+.stat-card:active {
+    transform: scale(0.96);
+}
+
+.card-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.card-icon svg {
+    width: 24px;
+    height: 24px;
+    stroke: white;
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.card-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    opacity: 0.9;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card-subtitle {
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100px;
+}
+
+/* Stats Summary Card */
+.stats-summary-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.summary-title {
+    font-size: 1rem;
+    color: var(--color-blue-dark);
+    margin-bottom: 15px;
+    font-weight: 800;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 10px 5px;
+    border-radius: 10px;
+}
+
+.stat-value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--color-blue);
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: #666;
+    margin-top: 2px;
+}
+
+.next-rank-progress {
+    width: 100%;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.progress-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2ecc71, #27ae60);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+/* Badges Slider */
+.badges-slider {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 10px 5px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.badges-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.badge-slide-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+    gap: 8px;
+    transition: transform 0.2s;
+}
+
+.badge-slide-item:active {
+    transform: scale(0.95);
+}
+
+.badge-slide-img-container {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 3px solid white;
+    background: #f0f0f0;
+}
+
+.badge-slide-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.badge-slide-name {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-blue-dark);
+    text-align: center;
+    line-height: 1.2;
+    max-width: 90px;
+}
+
+.badge-slide-item.locked .badge-slide-img-container {
+    filter: grayscale(100%);
+    opacity: 0.5;
+    box-shadow: none;
+    border-color: #eee;
+}
+
+.badge-slide-item.locked .badge-slide-name {
+    color: #999;
+}
+
+/* Mobile Optimization */
+@media (max-width: 380px) {
+    .stats-cards {
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 12px;
+    }
+
+    .card-icon {
+        width: 32px;
+        height: 32px;
+    }
+
+    .card-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .card-title {
+        font-size: 0.8rem;
+    }
+
+    .card-subtitle {
+        font-size: 0.75rem;
+    }
+
+    .badge-slide-img-container {
+        width: 50px;
+        height: 50px;
+    }
+
+    .badge-slide-item {
+        min-width: 60px;
+    }
+}

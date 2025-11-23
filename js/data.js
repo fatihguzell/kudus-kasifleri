@@ -319,6 +319,17 @@ const DataManager = {
             return true;
         }
         return false;
+    },
+
+    // About Us Management
+    getAboutUs() {
+        const defaultText = "Kudüs Kaşifleri, Mescid-i Aksa ve Kudüs hakkında farkındalık oluşturmak amacıyla hazırlanmış bir bilgi yarışmasıdır.";
+        return JSON.parse(localStorage.getItem('kk_about_us') || JSON.stringify(defaultText));
+    },
+
+    saveAboutUs(text) {
+        localStorage.setItem('kk_about_us', JSON.stringify(text));
+        this.pushToFirebase('aboutUs', text);
     }
 };
 

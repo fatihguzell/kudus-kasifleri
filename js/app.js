@@ -170,6 +170,18 @@ const App = {
             document.getElementById('message-modal').classList.add('hidden');
         };
 
+        // About Us Modal
+        document.getElementById('btn-about-us').onclick = () => {
+            if (typeof SoundManager !== 'undefined') SoundManager.play('click');
+            const text = DataManager.getAboutUs();
+            document.getElementById('about-us-text').textContent = text;
+            document.getElementById('about-us-modal').classList.remove('hidden');
+        };
+
+        document.getElementById('btn-close-about').onclick = () => {
+            document.getElementById('about-us-modal').classList.add('hidden');
+        };
+
 
         // Register
         document.getElementById('btn-register').onclick = () => {
@@ -448,9 +460,68 @@ const App = {
         // document.getElementById('xp-bar').style.width = `${xp}%`;
 
         // Rank Name
-        // Level 1 = Index 0
         const rankIndex = Math.max(0, Math.min(Auth.currentUser.level - 1, ranks.length - 1));
-        document.getElementById('user-rank-display').textContent = ranks[rankIndex].name;
+        const rankName = ranks[rankIndex].name;
+        document.getElementById('user-rank-display').textContent = rankName;
+
+        // Update Stats Cards
+        const currentRankDisplay = document.getElementById('current-rank-display');
+        if (currentRankDisplay) {
+            currentRankDisplay.textContent = rankName;
+        }
+
+        const earnedBadgesDisplay = document.getElementById('earned-badges-display');
+        if (earnedBadgesDisplay) {
+            const totalBadges = DataManager.getBadges().length;
+            const userBadges = Auth.currentUser.badges ? Auth.currentUser.badges.length : 0;
+            earnedBadgesDisplay.textContent = `${userBadges}/${totalBadges} Kazanıldı`;
+        }
+
+        // Update Stats Summary
+        if (document.getElementById('stat-total')) {
+            const u = Auth.currentUser;
+            document.getElementById('stat-total').textContent = u.totalQuestions || 0;
+            document.getElementById('stat-correct').textContent = u.totalCorrect || 0;
+            document.getElementById('stat-wrong').textContent = u.totalWrong || 0;
+            document.getElementById('stat-score').textContent = u.xp || 0;
+
+            // Next Rank Progress
+            const xp = u.xp || 0;
+            const xpForNextLevel = 100;
+            const currentLevelXP = xp % xpForNextLevel;
+            const remaining = xpForNextLevel - currentLevelXP;
+
+            if (u.level >= 10) {
+                document.getElementById('next-rank-points').textContent = "Maksimum Seviye";
+                document.getElementById('next-rank-bar').style.width = "100%";
+            } else {
+                document.getElementById('next-rank-points').textContent = `${remaining} Puan kaldı`;
+                const progressPercent = (currentLevelXP / xpForNextLevel) * 100;
+                document.getElementById('next-rank-bar').style.width = `${progressPercent}%`;
+            }
+        }
+
+        // Update Badges Slider
+        const slider = document.getElementById('dashboard-badges-slider');
+        if (slider) {
+            slider.innerHTML = '';
+            const allBadges = DataManager.getBadges();
+            const userBadges = Auth.currentUser.badges || [];
+
+            allBadges.forEach(badge => {
+                const isEarned = userBadges.some(b => String(b) === String(badge.id));
+
+                const div = document.createElement('div');
+                div.className = `badge-slide-item ${isEarned ? '' : 'locked'}`;
+                div.innerHTML = `
+                    <div class="badge-slide-img-container">
+                        <img src="${badge.image}" alt="${badge.name}">
+                    </div>
+                    <span class="badge-slide-name">${badge.name}</span>
+                `;
+                slider.appendChild(div);
+            });
+        }
 
         // Admin Button
         const btnAdmin = document.getElementById('btn-admin');

@@ -53,10 +53,19 @@ const Auth = {
         return this.currentUser && this.currentUser.role === 'admin';
     },
 
-    updateProgress(xpGained) {
+    updateProgress(xpGained, correctCount = 0, wrongCount = 0) {
         if (!this.currentUser) return;
 
         this.currentUser.xp += xpGained;
+
+        // Initialize stats if not exist
+        if (!this.currentUser.totalQuestions) this.currentUser.totalQuestions = 0;
+        if (!this.currentUser.totalCorrect) this.currentUser.totalCorrect = 0;
+        if (!this.currentUser.totalWrong) this.currentUser.totalWrong = 0;
+
+        this.currentUser.totalQuestions += (correctCount + wrongCount);
+        this.currentUser.totalCorrect += correctCount;
+        this.currentUser.totalWrong += wrongCount;
 
         // Level up logic (simple: every 100 xp = 1 level)
         const newLevel = Math.floor(this.currentUser.xp / 100) + 1;

@@ -5,6 +5,8 @@ const Game = {
     totalQuestions: 10,
     timer: null,
     timeRemaining: 0,
+    correctCount: 0,
+    wrongCount: 0,
 
     // Allowed mascots for questions (excluding happy/sad)
     questionMascots: [
@@ -37,6 +39,8 @@ const Game = {
         this.questions = this.shuffleArray([...levelQuestions]).slice(0, this.totalQuestions);
         this.currentIndex = 0;
         this.score = 0;
+        this.correctCount = 0;
+        this.wrongCount = 0;
         this.updateScoreUI();
         this.startTimer();
         this.updateProgressBar();
@@ -166,6 +170,7 @@ const Game = {
                 setTimeout(() => SoundManager.play('progress'), 200);
             }
             this.score += 10;
+            this.correctCount++;
             this.updateScoreUI();
             setTimeout(() => {
                 this.currentIndex++;
@@ -176,6 +181,7 @@ const Game = {
             if (typeof SoundManager !== 'undefined') {
                 SoundManager.play('wrong');
             }
+            this.wrongCount++;
             // Show Sad Mascot
             document.getElementById('game-mascot').src = "assets/karakter-ifadeleri/krk-uzgun.png";
 
@@ -215,7 +221,7 @@ const Game = {
             msg.textContent = `Maalesef bilemedin.\nSkorun: ${this.score}`;
         }
 
-        Auth.updateProgress(this.score);
+        Auth.updateProgress(this.score, this.correctCount, this.wrongCount);
         modal.classList.remove('hidden');
 
         btn.onclick = () => {

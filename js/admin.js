@@ -81,6 +81,10 @@ const Admin = {
         const settings = DataManager.getSettings();
         document.getElementById('game-minutes').value = settings.minutes;
         document.getElementById('game-seconds').value = settings.seconds;
+
+        // Load About Us text
+        const aboutText = DataManager.getAboutUs();
+        document.getElementById('admin-about-us-text').value = aboutText;
     },
 
     saveGameSettings() {
@@ -90,6 +94,12 @@ const Admin = {
         const settings = { minutes, seconds };
         DataManager.saveSettings(settings);
         alert('Oyun ayarları kaydedildi!');
+    },
+
+    saveAboutUsSettings() {
+        const text = document.getElementById('admin-about-us-text').value;
+        DataManager.saveAboutUs(text);
+        alert('Biz Kimiz metni kaydedildi!');
     },
 
     deleteAllMessages() {
