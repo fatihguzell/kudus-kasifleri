@@ -13,9 +13,25 @@ const firebaseConfig = {
 
 // Firebase'i başlat
 if (typeof firebase !== 'undefined') {
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    console.log("Firebase başlatıldı!");
+    try {
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        console.log("✅ Firebase başarıyla başlatıldı!");
+
+        // Bağlantı testi
+        const connectedRef = firebase.database().ref(".info/connected");
+        connectedRef.on("value", (snap) => {
+            if (snap.val() === true) {
+                console.log("✅ Firebase sunucusuna BAĞLANDI.");
+            } else {
+                console.log("⚠️ Firebase bağlantısı KOPTU veya kurulamadı.");
+            }
+        });
+
+    } catch (error) {
+        console.error("❌ Firebase başlatma hatası:", error);
+        alert("Veritabanı bağlantı hatası! Detaylar konsolda.");
+    }
 } else {
-    console.error("Firebase SDK yüklenemedi!");
+    console.error("❌ Firebase SDK yüklenemedi! İnternet bağlantınızı kontrol edin.");
 }

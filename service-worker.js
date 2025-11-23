@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kudus-kasifleri-v1';
+const CACHE_NAME = 'kudus-kasifleri-v2';
 const urlsToCache = [
     '/',
     '/index.html',
@@ -55,7 +55,7 @@ self.addEventListener("fetch", (e) => {
     e.respondWith(
         caches.match(e.request).then((response) => response || fetch(e.request))
     );
-});
+})
 
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
