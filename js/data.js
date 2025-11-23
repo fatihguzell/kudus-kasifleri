@@ -118,6 +118,12 @@ const DataManager = {
         return JSON.parse(localStorage.getItem('kk_users') || '[]');
     },
 
+    // Return a single user by id
+    getUserById(id) {
+        const users = this.getUsers();
+        return users.find(u => u.id === id);
+    },
+
     saveUser(user) {
         const users = this.getUsers();
         const existingIndex = users.findIndex(u => u.id === user.id);

@@ -442,9 +442,12 @@ const Admin = {
             }
 
             const botBadge = u.isBot ? ' <span style="color: #3498db; font-size: 0.8rem;">🤖</span>' : '';
+            const inspectBtn = `<button class="btn-small" style="background:#2ecc71" onclick="Admin.showUserDetails('${u.id}')">İncele</button>`;
+
             item.innerHTML = `
                 <span>${u.username}${botBadge} (Lvl: ${u.level})</span>
                 ${actions}
+                ${inspectBtn}
             `;
             list.appendChild(item);
         });
@@ -488,7 +491,7 @@ const Admin = {
             const item = document.createElement('div');
             item.className = 'admin-badge-item';
             item.innerHTML = `
-                <div class="badge-preview-area">
+                < div class="badge-preview-area" >
                     <img id="preview-img-${b.id}" src="${b.image}" class="badge-preview-img" alt="Badge">
                     <div style="font-size:0.8rem; color:#888; margin-top:5px;">ID: ${b.id}</div>
                 </div>
