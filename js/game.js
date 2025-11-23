@@ -41,6 +41,7 @@ const Game = {
         this.score = 0;
         this.correctCount = 0;
         this.wrongCount = 0;
+        this.startTime = Date.now(); // Track game start time
         this.updateScoreUI();
         this.startTimer();
         this.updateProgressBar();
@@ -221,7 +222,8 @@ const Game = {
             msg.textContent = `Maalesef bilemedin.\nSkorun: ${this.score}`;
         }
 
-        Auth.updateProgress(this.score, this.correctCount, this.wrongCount);
+        const gameDuration = Math.floor((Date.now() - this.startTime) / 1000); // in seconds
+        Auth.updateProgress(this.score, this.correctCount, this.wrongCount, gameDuration);
         modal.classList.remove('hidden');
 
         btn.onclick = () => {

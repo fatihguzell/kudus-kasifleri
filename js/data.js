@@ -17,6 +17,9 @@ const DataManager = {
         if (!localStorage.getItem('kk_messages')) {
             this.initMessages();
         }
+        if (!localStorage.getItem('kk_bots_initialized')) {
+            this.initBotUsers();
+        }
 
         // Sync with Firebase if available
         if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
@@ -330,6 +333,51 @@ const DataManager = {
     saveAboutUs(text) {
         localStorage.setItem('kk_about_us', JSON.stringify(text));
         this.pushToFirebase('aboutUs', text);
+    },
+
+    // Bot Users for Leaderboard
+    initBotUsers() {
+        const botNames = [
+            'Ahmet Yılmaz', 'Mehmet Kaya', 'Ayşe Demir', 'Fatma Çelik',
+            'Mustafa Şahin', 'Zeynep Yıldız', 'Ali Aydın', 'Elif Öztürk',
+            'Hasan Arslan', 'Merve Doğan', 'İbrahim Kılıç', 'Selin Koç',
+            'Ömer Şimşek', 'Büşra Yılmaz', 'Yunus Çetin', 'Esra Özdemir',
+            'Murat Aksoy', 'Hatice Polat', 'Emre Güneş', 'Rabia Kara'
+        ];
+
+        const users = this.getUsers();
+
+        botNames.forEach((name, index) => {
+            // Random stats for realistic leaderboard
+            const totalQuestions = Math.floor(Math.random() * 50) + 20; // 20-70 questions
+            const correctRate = 0.6 + Math.random() * 0.35; // 60-95% correct
+            const totalCorrect = Math.floor(totalQuestions * correctRate);
+            const totalWrong = totalQuestions - totalCorrect;
+            const xp = totalCorrect * 10 + Math.floor(Math.random() * 50);
+            const level = Math.min(10, Math.floor(xp / 100) + 1);
+
+            // Average time per question (faster players get better rank)
+            const avgTimePerQuestion = 5 + Math.random() * 15; // 5-20 seconds
+            const totalTime = Math.floor(totalQuestions * avgTimePerQuestion);
+
+            users.push({
+                username: name,
+                password: 'bot123',
+                xp: xp,
+                level: level,
+                badges: [],
+                role: 'user',
+                isBot: true,
+                totalQuestions: totalQuestions,
+                totalCorrect: totalCorrect,
+                totalWrong: totalWrong,
+                totalTime: totalTime, // in seconds
+                lastPlayed: Date.now() - Math.floor(Math.random() * 7 * 24 * 60 * 60 * 1000) // within last week
+            });
+        });
+
+        localStorage.setItem('kk_users', JSON.stringify(users));
+        localStorage.setItem('kk_bots_initialized', 'true');
     }
 };
 

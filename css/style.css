@@ -1787,3 +1787,148 @@ body {
         padding: 10px 15px;
     }
 }
+
+/* Community Cards */
+.community-cards {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+}
+
+.community-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.community-card:active {
+    transform: scale(0.96);
+}
+
+.community-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.community-icon svg {
+    stroke: white;
+}
+
+.community-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: white;
+    text-align: center;
+}
+
+/* Leaderboard Modal */
+.leaderboard-content {
+    max-width: 500px;
+    max-height: 80vh;
+}
+
+.leaderboard-list {
+    padding: 20px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.leaderboard-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    transition: transform 0.2s;
+}
+
+.leaderboard-item:hover {
+    transform: translateX(5px);
+}
+
+.leaderboard-rank {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 800;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.leaderboard-rank.top-1 {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+}
+
+.leaderboard-rank.top-2 {
+    background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
+}
+
+.leaderboard-rank.top-3 {
+    background: linear-gradient(135deg, #CD7F32, #B8860B);
+}
+
+.leaderboard-info {
+    flex: 1;
+}
+
+.leaderboard-name {
+    font-weight: 700;
+    color: var(--color-blue-dark);
+    font-size: 0.95rem;
+}
+
+.leaderboard-stats {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 2px;
+}
+
+.leaderboard-score {
+    font-weight: 800;
+    color: var(--color-blue);
+    font-size: 1.1rem;
+}
+
+@media (max-width: 480px) {
+    .community-cards {
+        gap: 10px;
+    }
+
+    .community-card {
+        padding: 15px 10px;
+    }
+
+    .community-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .community-icon svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .community-title {
+        font-size: 0.75rem;
+    }
+}

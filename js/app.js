@@ -220,6 +220,21 @@ const App = {
         }
 
 
+        // Leaderboard buttons
+        document.getElementById('btn-weekly-leaders').onclick = () => {
+            if (typeof SoundManager !== 'undefined') SoundManager.play('click');
+            this.showLeaderboard('weekly');
+        };
+
+        document.getElementById('btn-daily-leaders').onclick = () => {
+            if (typeof SoundManager !== 'undefined') SoundManager.play('click');
+            this.showLeaderboard('daily');
+        };
+
+        document.getElementById('btn-close-leaderboard').onclick = () => {
+            document.getElementById('leaderboard-modal').classList.add('hidden');
+        };
+
         // Register
         document.getElementById('btn-register').onclick = () => {
             if (typeof SoundManager !== 'undefined') {
@@ -601,6 +616,73 @@ const App = {
         setTimeout(() => {
             bubble.classList.add('visible');
         }, 10);
+    },
+
+    showLeaderboard(type) {
+        const modal = document.getElementById('leaderboard-modal');
+        const title = document.getElementById('leaderboard-title');
+        const list = document.getElementById('leaderboard-list');
+
+        // Set title
+        title.textContent = type === 'weekly' ? 'Haftanın Kaşifleri' : 'Günün Kaşifleri';
+
+        // Get all users
+        const allUsers = DataManager.getUsers();
+
+        // Filter by time period
+        const now = Date.now();
+        const dayMs = 24 * 60 * 60 * 1000;
+        const weekMs = 7 * dayMs;
+        const timeLimit = type === 'weekly' ? weekMs : dayMs;
+
+        const eligibleUsers = allUsers.filter(u => {
+            if (!u.lastPlayed) return false;
+            return (now - u.lastPlayed) <= timeLimit;
+        });
+
+        // Calculate score: (correct answers * 100) - (average time per question)
+        // This rewards both accuracy and speed
+        const rankedUsers = eligibleUsers.map(u => {
+            const totalCorrect = u.totalCorrect || 0;
+            const totalQuestions = u.totalQuestions || 1;
+            const totalTime = u.totalTime || 0;
+            const avgTime = totalQuestions > 0 ? totalTime / totalQuestions : 999;
+
+            // Score formula: prioritize correct answers, penalize slow speed
+            const score = (totalCorrect * 100) - avgTime;
+
+            return {
+                ...u,
+                score: Math.max(0, score),
+                avgTime: avgTime.toFixed(1)
+            };
+        }).sort((a, b) => b.score - a.score).slice(0, 10); // Top 10
+
+        // Render leaderboard
+        list.innerHTML = '';
+
+        if (rankedUsers.length === 0) {
+            list.innerHTML = '<div style="text-align:center; padding:40px; color:#999;">Henüz veri yok</div>';
+        } else {
+            rankedUsers.forEach((user, index) => {
+                const rank = index + 1;
+                const rankClass = rank === 1 ? 'top-1' : rank === 2 ? 'top-2' : rank === 3 ? 'top-3' : '';
+
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                item.innerHTML = `
+                    <div class="leaderboard-rank ${rankClass}">${rank}</div>
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">${user.username}</div>
+                        <div class="leaderboard-stats">${user.totalCorrect || 0} doğru • Ort. ${user.avgTime}sn</div>
+                    </div>
+                    <div class="leaderboard-score">${Math.floor(user.score)}</div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        modal.classList.remove('hidden');
     }
 };
 

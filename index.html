@@ -170,6 +170,41 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Explorers Community -->
+                    <div class="stats-summary-card">
+                        <h3 class="summary-title">Kaşifler Topluluğu</h3>
+                        <div class="community-cards">
+                            <div id="btn-weekly-leaders" class="community-card">
+                                <div class="community-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <path
+                                            d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <span class="community-title">Haftanın Kaşifleri</span>
+                            </div>
+                            <div id="btn-daily-leaders" class="community-card">
+                                <div class="community-icon">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <circle cx="12" cy="12" r="5"></circle>
+                                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                                    </svg>
+                                </div>
+                                <span class="community-title">Günün Kaşifleri</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Dashboard Footer -->
@@ -272,6 +307,19 @@
                     <button id="btn-go-admin" class="btn-secondary">Admin Paneli</button>
                 </div>
             </main>
+        </div>
+
+        <!-- Leaderboard Modal -->
+        <div id="leaderboard-modal" class="modal-overlay hidden">
+            <div class="modal-content leaderboard-content">
+                <div class="modal-header">
+                    <h2 id="leaderboard-title">Haftanın Kaşifleri</h2>
+                    <button id="btn-close-leaderboard" class="btn-small btn-close">X</button>
+                </div>
+                <div id="leaderboard-list" class="leaderboard-list">
+                    <!-- Leaderboard injected here -->
+                </div>
+            </div>
         </div>
 
         <!-- Ranks Modal -->
